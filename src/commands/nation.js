@@ -19,8 +19,7 @@ export async function execute(interaction) {
     
     if (!nations || nations.length === 0) {
       return await interaction.editReply({
-        content: `❌ Nation "${nationName}" not found. Please check the spelling and try again.`,
-        ephemeral: true
+        content: `❌ Nation "${nationName}" not found. Please check the spelling and try again.`
       });
     }
 
@@ -28,7 +27,7 @@ export async function execute(interaction) {
     
     const embed = new EmbedBuilder()
       .setColor(nation.dynmapColour ? `#${nation.dynmapColour}` : '#0099ff')
-      .setTitle(`🏛️ ${nation.name}`)
+      .setTitle(`🏛️ ${nation.name || 'Unknown Nation'}`)
       .setDescription(nation.board || 'No nation board set')
       .setTimestamp();
 
@@ -36,48 +35,69 @@ export async function execute(interaction) {
       embed.setURL(nation.wiki);
     }
 
-    embed.addFields(
-      { 
+    const fields = [];
+
+    if (nation.king?.name) {
+      fields.push({ 
         name: '👑 Leader', 
-        value: `${nation.king.name}`, 
+        value: nation.king.name, 
         inline: true 
-      },
-      { 
+      });
+    }
+
+    if (nation.capital?.name) {
+      fields.push({ 
         name: '🏰 Capital', 
         value: nation.capital.name, 
         inline: true 
-      },
-      { 
+      });
+    }
+
+    if (nation.timestamps?.registered) {
+      fields.push({ 
         name: '📅 Founded', 
         value: formatTimestamp(nation.timestamps.registered), 
         inline: true 
-      },
-      { 
+      });
+    }
+
+    if (nation.stats?.numResidents !== undefined) {
+      fields.push({ 
         name: '👥 Residents', 
         value: `${nation.stats.numResidents} residents`, 
         inline: true 
-      },
-      { 
+      });
+    }
+
+    if (nation.stats?.numTowns !== undefined) {
+      fields.push({ 
         name: '🏘️ Towns', 
         value: `${nation.stats.numTowns} towns`, 
         inline: true 
-      },
-      { 
+      });
+    }
+
+    if (nation.stats?.numTownBlocks !== undefined) {
+      fields.push({ 
         name: '🗺️ Area', 
         value: `${nation.stats.numTownBlocks} chunks`, 
         inline: true 
-      }
-    );
+      });
+    }
 
-    if (nation.stats.balance !== undefined) {
-      embed.addFields({
+    if (nation.stats?.balance !== undefined && nation.stats.balance !== null) {
+      fields.push({
         name: '💰 Treasury',
         value: `${nation.stats.balance.toLocaleString()} gold`,
         inline: true
       });
     }
 
-    if (nation.capital.coordinates?.spawn) {
+    if (fields.length > 0) {
+      embed.addFields(fields);
+    }
+
+    if (nation.capital?.coordinates?.spawn) {
       embed.addFields({
         name: '📍 Capital Location',
         value: formatCoordinates(nation.capital.coordinates.spawn),
@@ -113,9 +133,9 @@ export async function execute(interaction) {
     }
 
     const statusFlags = [];
-    if (nation.status.isPublic) statusFlags.push('🌍 Public');
-    if (nation.status.isOpen) statusFlags.push('🚪 Open');
-    if (nation.status.isNeutral) statusFlags.push('☮️ Neutral');
+    if (nation.status?.isPublic) statusFlags.push('🌍 Public');
+    if (nation.status?.isOpen) statusFlags.push('🚪 Open');
+    if (nation.status?.isNeutral) statusFlags.push('☮️ Neutral');
     
     if (statusFlags.length > 0) {
       embed.addFields({
@@ -125,15 +145,17 @@ export async function execute(interaction) {
       });
     }
 
-    embed.setFooter({ text: `EarthMC Aurora • ${nation.uuid}` });
+    if (nation.uuid) {
+      embed.setFooter({ text: `EarthMC Aurora • ${nation.uuid}` });
+    }
 
     await interaction.editReply({ embeds: [embed] });
 
   } catch (error) {
     console.error('Error executing nation command:', error);
+    console.error('Error details:', error.response?.data || error.message);
     await interaction.editReply({
-      content: '❌ An error occurred while fetching nation data. Please try again later.',
-      ephemeral: true
+      content: '❌ An error occurred while fetching nation data. Please try again later.'
     });
   }
 }

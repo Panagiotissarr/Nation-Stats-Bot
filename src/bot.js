@@ -26,14 +26,22 @@ async function deployCommands(client) {
 async function startBot() {
   try {
     console.log('🤖 Starting EarthMC Discord Bot...');
+    console.log('🔑 Authenticating with Discord...');
     
     const client = await createDiscordClient();
+    console.log('✅ Authentication successful, waiting for ready event...');
 
     client.once('ready', async () => {
       console.log(`✅ Bot is ready! Logged in as ${client.user.tag}`);
       console.log(`📊 Serving ${client.guilds.cache.size} server(s)`);
       
+      if (client.guilds.cache.size === 0) {
+        console.log('⚠️  Warning: Bot is not in any servers yet!');
+        console.log('📋 Invite the bot to your server using the Discord Developer Portal');
+      }
+      
       await deployCommands(client);
+      console.log('🎮 Bot is ready and listening for commands!');
     });
 
     client.on('interactionCreate', async interaction => {
@@ -47,6 +55,7 @@ async function startBot() {
       }
 
       try {
+        console.log(`📝 Executing command: /${interaction.commandName} by ${interaction.user.tag}`);
         await command.execute(interaction);
       } catch (error) {
         console.error(`Error executing ${interaction.commandName}:`, error);
@@ -68,10 +77,17 @@ async function startBot() {
       console.error('Discord client error:', error);
     });
 
-    console.log('🎮 Bot is running and listening for commands...');
+    client.on('warn', warning => {
+      console.warn('Discord client warning:', warning);
+    });
+
+    client.on('disconnect', () => {
+      console.log('🔌 Bot disconnected from Discord');
+    });
 
   } catch (error) {
     console.error('❌ Failed to start bot:', error);
+    console.error('Error stack:', error.stack);
     process.exit(1);
   }
 }

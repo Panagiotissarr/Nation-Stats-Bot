@@ -4,9 +4,12 @@
 A Discord bot that connects to the EarthMC API to display nation statistics from the Aurora world. The bot uses slash commands to fetch and display comprehensive information about nations including residents, towns, territory, balance, allies, enemies, and more.
 
 ## Recent Changes
-- 2025-10-18: Initial project setup with Node.js and Discord connector integration
+- 2025-10-18: Initial project setup with Node.js and bot token authentication
 - 2025-10-18: Installed discord.js and axios dependencies
 - 2025-10-18: Implemented bot with slash commands for nation statistics
+- 2025-10-18: Added comprehensive null checks for API responses
+- 2025-10-18: Fixed Discord intent permissions (using Guilds intent only)
+- 2025-10-18: Added detailed error logging and better authentication flow
 
 ## Project Architecture
 - **Language**: Node.js (v20) with JavaScript
