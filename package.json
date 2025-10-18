@@ -1,0 +1,13 @@
+{
+  "name": "earthmc-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for EarthMC nation statistics",
+  "main": "src/bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/bot.js"
+  },
+  "keywords": ["discord", "bot", "earthmc"],
+  "author": "",
+  "license": "MIT"
+}
