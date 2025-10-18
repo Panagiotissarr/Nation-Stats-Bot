@@ -7,7 +7,15 @@
   "scripts": {
     "start": "node src/bot.js"
   },
-  "keywords": ["discord", "bot", "earthmc"],
+  "keywords": [
+    "discord",
+    "bot",
+    "earthmc"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "discord.js": "^14.23.2"
+  }
 }
