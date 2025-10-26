@@ -1,18 +1,14 @@
 name: Run EarthMC Discord Bot
 
 on:
-  workflow_dispatch: # Allows you to start the workflow manually
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-
-    env:
-      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,7 +19,15 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Start bot
-        run: node src/bot.js
+      - name: Run bot
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        run: |
+          echo "🤖 Starting EarthMC Discord Bot..."
+          # Keep the bot running indefinitely, auto-restarting if it crashes
+          until node src/bot.js; do
+            echo "⚠️ Bot crashed with exit code $?. Restarting in 5s..."
+            sleep 5
+          done
