@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_TOKEN }}
 
     steps:
       - name: Checkout repository
