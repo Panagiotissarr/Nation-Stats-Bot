@@ -9,7 +9,7 @@ jobs:
   run-bot:
     runs-on: ubuntu-latest
     env:
-      DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }} # your bot token from GitHub secrets
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_TOKEN }} # <-- must match your code
 
     steps:
       - name: Checkout repository
@@ -18,10 +18,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # or whichever Node version you use
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run bot
         run: node src/bot.js
