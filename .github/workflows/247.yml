@@ -1,0 +1,29 @@
+name: Run EarthMC Discord Bot
+
+on:
+  workflow_dispatch: # Allows you to start the workflow manually
+  push:
+    branches:
+      - main
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    env:
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start bot
+        run: node src/bot.js
